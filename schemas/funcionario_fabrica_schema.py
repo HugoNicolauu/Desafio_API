@@ -2,7 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
 
-class FuncionarioSchema(BaseModel):
+class Funcionario_FabricaSchema(BaseModel):
     id: Optional[int]
     nome: str
     rg: str
