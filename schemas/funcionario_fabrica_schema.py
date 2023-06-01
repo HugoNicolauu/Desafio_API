@@ -15,6 +15,6 @@ class Funcionario_FabricaSchema(BaseModel):
     cidade: str
     
     
-    class Config:
+    class config:
         orm_mode = True
     

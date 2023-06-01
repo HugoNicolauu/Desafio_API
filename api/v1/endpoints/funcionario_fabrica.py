@@ -13,7 +13,7 @@ from utils.cep_busca import busca_cep
 
 router = APIRouter()
 
-@router.post('/',status_code=status.HTTP_201_CREATED,response_class=Funcionario_FabricaSchema)
+@router.post('/',status_code=status.HTTP_201_CREATED,response_model=Funcionario_FabricaSchema)
 async def post_funcionario_fabrica(func_fab:Funcionario_FabricaSchema,db: AsyncSession = Depends(get_session2)):
     result= busca_cep(func_fab.cep)
     novo_func_fab = Funcionario_fabricaModel(nome=func_fab.nome,rg=func_fab.rg,
