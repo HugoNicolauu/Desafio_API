@@ -6,7 +6,7 @@ from core.configs import Settings
 class Funcionario_fabricaModel(Settings.DBBaseModel):
     __tablename__ = 'funcionarios_fabrica'
     
-    id = Column(Integer,primary_key=True)
+    id = Column(Integer,primary_key=True,autoincrement=True)
     nome = Column(String(100))
     rg = Column(String(20),unique=True)
     cpf = Column(String(14),unique=True)
