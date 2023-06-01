@@ -3,7 +3,7 @@ from requests import get
 from fastapi import HTTPException
 
 def busca_cep(cep:str):
-    """ Um metodo simples de busca de cep, ultilizando Json e requests
+    """ Um metodo simples de busca de cep, ultilizando Json e requests e o site "viacep"
 
     Args:
         cep (str): 8 digitos no Formato -> 00000000 ou 00000-000
