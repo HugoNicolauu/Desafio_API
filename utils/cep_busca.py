@@ -2,7 +2,30 @@ from json import loads
 from requests import get
 from fastapi import HTTPException
 
-def SearchCep(cep):
+def busca_cep(cep:str):
+    """ Um metodo simples de busca de cep, ultilizando Json e requests
+
+    Args:
+        cep (str): 8 digitos no Formato -> 00000000 ou 00000-000
+
+    Raises:
+        HTTPException: Caso o status code da resposta da "viacep" não seja 200.
+        HTTPException: Caso a resposta possua a chave "erro".
+
+    Returns:
+        json: {
+                "cep": "",
+                "logradouro": " ",
+                "complemento": "",
+                "bairro": " ",
+                "localidade": "",
+                "uf": "",
+                "ibge": "",
+                "gia": "",
+                "ddd": "",
+                "siafi": ""
+              }
+    """
     url = f'https://viacep.com.br/ws/{cep}/json/'
     response = get(url)
     if response.status_code == 200:
@@ -11,7 +34,7 @@ def SearchCep(cep):
             data['erro'] 
             raise HTTPException(status_code=404,detail="Cep Invalido")
         except: 
-            return data['logradouro'], data['bairro'], data['localidade']
+            return data
     else:
         raise HTTPException(status_code=404,detail="Cep não Encontrado")
  
