@@ -1,7 +1,6 @@
 from core.configs import settings
 from core.database2 import engine as engine2
 
-
 async def create_tablebd2()-> None:
     import models.funcionario_fabrica
     
