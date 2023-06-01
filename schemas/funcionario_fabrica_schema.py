@@ -7,12 +7,9 @@ class Funcionario_FabricaSchema(BaseModel):
     nome: str
     rg: str
     cpf: str
-    data_adimissao : datetime
-    data_hora_alteracao: datetime
+    data_adimissao : Optional[datetime]
+    data_hora_alteracao: Optional[datetime]
     cep: str
-    endereco: str
-    bairro: str
-    cidade: str
     
     
     class config:
