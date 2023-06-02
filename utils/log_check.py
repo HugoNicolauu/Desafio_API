@@ -2,14 +2,14 @@ from datetime import datetime,timedelta
 import logging
 import os
 
-logging.basicConfig(filename='logs.log', level=logging.INFO,
+logging.basicConfig(filename="./Desafio_API/utils\logs.log", level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 data_limite = datetime.now() - timedelta(days=2)
 
 
 
 def LogCheck():
-    for arquivo in os.listdir(os.path.dirname(__file__)):
+    for arquivo in "./Desafio_API/utils":
      if arquivo.endswith('.log'):
           data = open(arquivo)
           data_arquivo_str = data.read(19)
