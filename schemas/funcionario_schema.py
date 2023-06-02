@@ -7,7 +7,7 @@ class FuncionarioSchema(BaseModel):
     nome: str
     rg: str
     cpf: str
-    data_adimissao : date
+    data_admissao : date
     data_hora_alteracao: datetime
     cep: str
     
