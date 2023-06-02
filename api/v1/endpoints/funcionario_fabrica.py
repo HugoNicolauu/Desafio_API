@@ -6,9 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from models.funcionario_fabrica import Funcionario_fabricaModel
-from models.funcionario import FuncionarioModel
 from schemas.funcionario_fabrica_schema import Funcionario_FabricaSchema, Funcionario_FabricaSchemaBase, Funcionario_FabricaSchemaUp
-from core.deps import get_session, get_session2
+from core.deps import get_session2
 from utils.cep_busca import busca_cep
 
 router = APIRouter()
@@ -22,9 +21,12 @@ async def post_funcionario_fabrica(func_fab:Funcionario_FabricaSchemaBase,db: As
                                              data_hora_alteracao =datetime.today(),
                                              endereco=result['logradouro'],bairro=result['bairro'],cidade=result['localidade'])
     db.add(novo_func_fab)
-    await db.commit()
-    
-    return novo_func_fab
+    async with db as session:
+        try:
+            await session.commit()
+            return novo_func_fab
+        except TypeError:
+            raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,detail='Dados invalidos')
 
 
 @router.get('/',response_model=List[Funcionario_FabricaSchema],status_code=status.HTTP_200_OK)
@@ -95,4 +97,11 @@ async def delete_funcionario_fabrica(func_fab_id: int, db: AsyncSession = Depend
             return Response(status_code=status.HTTP_204_NO_CONTENT)
         else:
             raise HTTPException(detail='Funcionario Não Encontrado',status_code=status.HTTP_404_NOT_FOUND)
+        
+
+@router.post('/',List[Funcionario_FabricaSchema],status_code=status.HTTP_201_CREATED)
+async def transferencia_funcionario(db: AsyncSession = Depends(get_session2)):
+    async with db as session:
+        pass
+            
        
