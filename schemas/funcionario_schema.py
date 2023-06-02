@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, date
 
 class FuncionarioSchema(BaseModel):
     id: Optional[int]
