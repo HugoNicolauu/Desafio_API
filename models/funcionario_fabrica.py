@@ -10,7 +10,7 @@ class Funcionario_fabricaModel(Settings.DBBaseModel):
     nome: str = Column(String(100))
     rg: str = Column(String(20),unique=True)
     cpf: str = Column(String(14),unique=True)
-    data_adimissao:datetime = Column(Date)
+    data_admissao:datetime = Column(Date)
     data_hora_alteracao: datetime = Column(DateTime)
     cep: str = Column(String(10))
     endereco: str = Column(String(50))
