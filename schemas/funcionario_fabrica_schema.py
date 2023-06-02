@@ -15,7 +15,7 @@ class Funcionario_FabricaSchemaBase(BaseModel):
 
 
 class Funcionario_FabricaSchema(Funcionario_FabricaSchemaBase):
-    data_adimissao : date
+    data_admissao : date
     data_hora_alteracao: datetime
     endereco:str
     bairro:str
