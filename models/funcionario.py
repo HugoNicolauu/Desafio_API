@@ -10,6 +10,6 @@ class FuncionarioModel(Settings.DBBaseModel):
     nome = Column(String(100))
     rg = Column(String(20),unique=True)
     cpf = Column(String(14),unique=True)
-    data_adimissao = Column(Date)
+    data_admissao = Column(Date)
     data_hora_alteracao = Column(DateTime)
     cep = Column(String(10))
