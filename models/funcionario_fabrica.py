@@ -1,18 +1,18 @@
-from sqlalchemy import  Column, Integer, String, TIMESTAMP, Date
-
+from sqlalchemy import  Column, Integer, String,DateTime,Date
+from datetime import datetime
 
 from core.configs import Settings
 
 class Funcionario_fabricaModel(Settings.DBBaseModel):
     __tablename__ = 'funcionarios_fabrica'
     
-    id = Column(Integer,primary_key=True,autoincrement=True)
-    nome = Column(String(100))
-    rg = Column(String(20),unique=True)
-    cpf = Column(String(14),unique=True)
-    data_adimissao = Column(Date)
-    data_hora_alteracao = Column(TIMESTAMP)
-    cep = Column(String(10))
-    endereco = Column(String(50))
-    bairro = Column(String(50))
-    cidade = Column(String(50))
+    id: int = Column(Integer,primary_key=True,autoincrement=True)
+    nome: str = Column(String(100))
+    rg: str = Column(String(20),unique=True)
+    cpf: str = Column(String(14),unique=True)
+    data_adimissao:datetime = Column(Date)
+    data_hora_alteracao: datetime = Column(DateTime)
+    cep: str = Column(String(10))
+    endereco: str = Column(String(50))
+    bairro: str = Column(String(50))
+    cidade: str = Column(String(50))
