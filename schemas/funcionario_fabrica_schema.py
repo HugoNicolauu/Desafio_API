@@ -20,3 +20,12 @@ class Funcionario_FabricaSchema(Funcionario_FabricaSchemaBase):
     endereco:str
     bairro:str
     cidade:str
+
+class Funcionario_FabricaSchemaUp(Funcionario_FabricaSchemaBase):
+    nome: Optional[str]
+    rg: Optional[str]
+    cpf: Optional[str]
+    cep: Optional[str]
+    endereco:str
+    bairro:str
+    cidade:str
