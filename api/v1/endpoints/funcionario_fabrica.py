@@ -99,7 +99,7 @@ async def delete_funcionario_fabrica(func_fab_id: int, db: AsyncSession = Depend
             raise HTTPException(detail='Funcionario Não Encontrado',status_code=status.HTTP_404_NOT_FOUND)
         
 
-@router.post('/',List[Funcionario_FabricaSchema],status_code=status.HTTP_201_CREATED)
+@router.post('/',response_model=List[Funcionario_FabricaSchema],status_code=status.HTTP_201_CREATED)
 async def transferencia_funcionario(db: AsyncSession = Depends(get_session2)):
     async with db as session:
         pass
