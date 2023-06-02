@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime,date
 
 class Funcionario_FabricaSchemaBase(BaseModel):
     id: Optional[int] = None
@@ -9,13 +9,13 @@ class Funcionario_FabricaSchemaBase(BaseModel):
     cpf: str
     cep: str
     
-
-    
-    class config:
+    class Config: #Lembrete, SQLAlchemy does not return a dictionary, which is what pydantic expects by default. You can configure your model to also support loading from standard orm parameters
         orm_mode = True
+    
+
 
 class Funcionario_FabricaSchema(Funcionario_FabricaSchemaBase):
-    data_adimissao : datetime
+    data_adimissao : date
     data_hora_alteracao: datetime
     endereco:str
     bairro:str
