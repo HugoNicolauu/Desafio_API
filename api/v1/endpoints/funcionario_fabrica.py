@@ -51,7 +51,7 @@ async def get_funcionario_fabrica(func_fab_id: int, db: AsyncSession = Depends(g
         
         
 @router.put('/{func_fab_id}',response_model=Funcionario_FabricaSchema,status_code=status.HTTP_202_ACCEPTED)
-async def get_funcionario_fabrica(func_fab_id: int,func_fab:Funcionario_FabricaSchemaUp ,db: AsyncSession = Depends(get_session2)):
+async def put_funcionario_fabrica(func_fab_id: int,func_fab:Funcionario_FabricaSchemaUp ,db: AsyncSession = Depends(get_session2)):
     async with db as session:
         query = select(Funcionario_fabricaModel).filter(Funcionario_fabricaModel.id == func_fab_id)
         result = await session.execute(query)
@@ -79,4 +79,20 @@ async def get_funcionario_fabrica(func_fab_id: int,func_fab:Funcionario_FabricaS
             return funcionarios_fab_up
         else:
             raise HTTPException(detail='Funcionario Não Encontrado',status_code=status.HTTP_404_NOT_FOUND)       
+
+
+@router.delete('/{func_fab_id}',status_code=status.HTTP_204_NO_CONTENT)
+async def delete_funcionario_fabrica(func_fab_id: int, db: AsyncSession = Depends(get_session2)):
+    async with db as session:
+        query = select(Funcionario_fabricaModel).filter(Funcionario_fabricaModel.id == func_fab_id)
+        result = await session.execute(query)
+        funcionario_fab: List[Funcionario_FabricaSchema] = result.scalars().one_or_none()
+        
+        if funcionario_fab:
+            await session.delete(funcionario_fab)
+            await session.commit()
+            
+            return Response(status_code=status.HTTP_204_NO_CONTENT)
+        else:
+            raise HTTPException(detail='Funcionario Não Encontrado',status_code=status.HTTP_404_NOT_FOUND)
        
