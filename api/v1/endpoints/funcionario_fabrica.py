@@ -5,10 +5,13 @@ from fastapi import APIRouter, status, Depends, HTTPException,Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from models.funcionario import FuncionarioModel
 from models.funcionario_fabrica import Funcionario_fabricaModel
 from schemas.funcionario_fabrica_schema import Funcionario_FabricaSchema, Funcionario_FabricaSchemaBase, Funcionario_FabricaSchemaUp
-from core.deps import get_session2
+from schemas.funcionario_schema import FuncionarioSchema
+from core.deps import get_session2,get_session
 from utils.cep_busca import busca_cep
+from api.v1.endpoints.funcionario import get_funcionarios
 
 router = APIRouter()
 
@@ -17,7 +20,7 @@ async def post_funcionario_fabrica(func_fab:Funcionario_FabricaSchemaBase,db: As
     result= busca_cep(func_fab.cep)
     novo_func_fab:Funcionario_fabricaModel = Funcionario_fabricaModel(nome=func_fab.nome,rg=func_fab.rg,
                                              cpf=func_fab.cpf,cep=func_fab.cep,
-                                             data_adimissao =datetime.now(),
+                                             data_admissao =datetime.now(),
                                              data_hora_alteracao =datetime.today(),
                                              endereco=result['logradouro'],bairro=result['bairro'],cidade=result['localidade'])
     db.add(novo_func_fab)
@@ -99,9 +102,38 @@ async def delete_funcionario_fabrica(func_fab_id: int, db: AsyncSession = Depend
             raise HTTPException(detail='Funcionario Não Encontrado',status_code=status.HTTP_404_NOT_FOUND)
         
 
-@router.post('/',response_model=List[Funcionario_FabricaSchema],status_code=status.HTTP_201_CREATED)
-async def transferencia_funcionario(db: AsyncSession = Depends(get_session2)):
+@router.post('/transferencia',status_code=status.HTTP_201_CREATED)
+async def transferencia_funcionario(db: AsyncSession = Depends(get_session),db2: AsyncSession = Depends(get_session2)):
     async with db as session:
-        pass
+        async with db2 as session2:
+            query = select(FuncionarioModel)
+            result = await session.execute(query)
+            funcionarios: List[FuncionarioSchema] = result.scalars().all()
+            query = select(Funcionario_fabricaModel)
+            result2 = await session2.execute(query)
+            funcionarios_fab: List[Funcionario_FabricaSchema] = result2.scalars().all()
+            
+            for func_fab in funcionarios_fab:
+                for func in funcionarios:
+                    if func_fab.id==func.id:
+                        end= busca_cep(func.cep)
+                        
+                        func_fab.nome= func.nome
+                        func_fab.rg= func.rg
+                        func_fab.cpf= func.cpf
+                        func_fab.data_admissao= func.data_admissao
+                        func_fab.data_hora_alteracao= datetime.now()
+                        func_fab.cep=func.cep
+                        func_fab.endereco=end['logradouro']
+                        func_fab.bairro=end['bairro']
+                        func_fab.cidade=end['localidade']
+                        
+                        await session2.commit()
+                
+            query = select(Funcionario_fabricaModel)
+            result = await session2.execute(query)
+            funcionarios_fab: List[Funcionario_FabricaSchema] = result.scalars().all()
+            return funcionarios_fab
+            
             
        
