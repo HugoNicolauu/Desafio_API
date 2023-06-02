@@ -7,7 +7,7 @@ from sqlalchemy.future import select
 
 from models.funcionario_fabrica import Funcionario_fabricaModel
 from models.funcionario import FuncionarioModel
-from schemas.funcionario_fabrica_schema import Funcionario_FabricaSchema, Funcionario_FabricaSchemaBase
+from schemas.funcionario_fabrica_schema import Funcionario_FabricaSchema, Funcionario_FabricaSchemaBase, Funcionario_FabricaSchemaUp
 from core.deps import get_session, get_session2
 from utils.cep_busca import busca_cep
 
@@ -42,13 +42,41 @@ async def get_funcionario_fabrica(func_fab_id: int, db: AsyncSession = Depends(g
     async with db as session:
         query = select(Funcionario_fabricaModel).filter(Funcionario_fabricaModel.id == func_fab_id)
         result = await session.execute(query)
-        funcionarios_fab: List[Funcionario_FabricaSchema] = result.scalars().one_or_none()
+        funcionario_fab: List[Funcionario_FabricaSchema] = result.scalars().one_or_none()
         
-        if funcionarios_fab:
-            return funcionarios_fab
+        if funcionario_fab:
+            return funcionario_fab
         else:
             raise HTTPException(detail='Funcionario Não Encontrado',status_code=status.HTTP_404_NOT_FOUND)
         
         
-          
+@router.put('/{func_fab_id}',response_model=Funcionario_FabricaSchema,status_code=status.HTTP_202_ACCEPTED)
+async def get_funcionario_fabrica(func_fab_id: int,func_fab:Funcionario_FabricaSchemaUp ,db: AsyncSession = Depends(get_session2)):
+    async with db as session:
+        query = select(Funcionario_fabricaModel).filter(Funcionario_fabricaModel.id == func_fab_id)
+        result = await session.execute(query)
+        funcionarios_fab_up: List[Funcionario_FabricaSchema] = result.scalars().one_or_none()
+        
+        if funcionarios_fab_up:
+            if func_fab:
+                if func_fab.nome:
+                    funcionarios_fab_up.nome=func_fab.nome
+                if func_fab.rg:
+                    funcionarios_fab_up.rg=func_fab.rg
+                if func_fab.cpf:
+                    funcionarios_fab_up.cpf=func_fab.cpf
+                if func_fab.cep:
+                    result= busca_cep(func_fab.cep)
+                    funcionarios_fab_up.cep=func_fab.cep
+                    funcionarios_fab_up.endereco = result['logradouro']
+                    funcionarios_fab_up.bairro = result['bairro']
+                    funcionarios_fab_up.cidade = result['localidade']
+                    
+                funcionarios_fab_up.data_hora_alteracao = datetime.today()
+                
+            await session.commit()    
+            
+            return funcionarios_fab_up
+        else:
+            raise HTTPException(detail='Funcionario Não Encontrado',status_code=status.HTTP_404_NOT_FOUND)       
        
