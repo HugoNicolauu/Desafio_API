@@ -1,4 +1,4 @@
-from sqlalchemy import  Column, Integer, String, Date
+from sqlalchemy import  Column, Integer, String, DateTime,Date
 
 
 from core.configs import Settings
@@ -11,5 +11,5 @@ class FuncionarioModel(Settings.DBBaseModel):
     rg = Column(String(20),unique=True)
     cpf = Column(String(14),unique=True)
     data_adimissao = Column(Date)
-    data_hora_alteracao = Column(Date)
+    data_hora_alteracao = Column(DateTime)
     cep = Column(String(10))
