@@ -12,11 +12,11 @@ from core.deps import get_session
 
 router = APIRouter()
 
-@router.get('/',status_code=status.HTTP_200_OK,response_model=List[FuncionarioSchema])
+@router.get('/',response_model=List[FuncionarioSchema],status_code= status.HTTP_200_OK)
 async def get_funcionarios(db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(FuncionarioModel)
         result = await session.execute(query)
-        funcionarios_fab: List[FuncionarioSchema] = result.scalars().all()
+        funcionarios: List[FuncionarioSchema] = result.scalars().all()
     
-        return funcionarios_fab
+        return funcionarios
