@@ -25,3 +25,13 @@ async def post_funcionario_fabrica(func_fab:Funcionario_FabricaSchemaBase,db: As
     await db.commit()
     
     return novo_func_fab
+
+
+@router.get('/',response_model=List[Funcionario_FabricaSchema],status_code=status.HTTP_200_OK)
+async def get_funcionarios_fabrica(db: AsyncSession = Depends(get_session2)):
+    async with db as session:
+        query = select(Funcionario_fabricaModel)
+        result = await session.execute(query)
+        funcionarios_fab: List[Funcionario_FabricaSchema] = result.scalars().all()
+    
+        return funcionarios_fab
