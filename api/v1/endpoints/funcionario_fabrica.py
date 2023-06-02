@@ -35,3 +35,20 @@ async def get_funcionarios_fabrica(db: AsyncSession = Depends(get_session2)):
         funcionarios_fab: List[Funcionario_FabricaSchema] = result.scalars().all()
     
         return funcionarios_fab
+    
+
+@router.get('/{func_fab_id}',response_model=Funcionario_FabricaSchema,status_code=status.HTTP_200_OK)
+async def get_funcionario_fabrica(func_fab_id: int, db: AsyncSession = Depends(get_session2)):
+    async with db as session:
+        query = select(Funcionario_fabricaModel).filter(Funcionario_fabricaModel.id == func_fab_id)
+        result = await session.execute(query)
+        funcionarios_fab: List[Funcionario_FabricaSchema] = result.scalars().one_or_none()
+        
+        if funcionarios_fab:
+            return funcionarios_fab
+        else:
+            raise HTTPException(detail='Funcionario Não Encontrado',status_code=status.HTTP_404_NOT_FOUND)
+        
+        
+          
+       
