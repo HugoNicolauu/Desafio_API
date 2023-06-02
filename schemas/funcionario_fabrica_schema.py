@@ -2,16 +2,21 @@ from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime
 
-class Funcionario_FabricaSchema(BaseModel):
-    id: Optional[int]
+class Funcionario_FabricaSchemaBase(BaseModel):
+    id: Optional[int] = None
     nome: str
     rg: str
     cpf: str
-    data_adimissao : Optional[datetime]
-    data_hora_alteracao: Optional[datetime]
     cep: str
     
+
     
     class config:
         orm_mode = True
-    
+
+class Funcionario_FabricaSchema(Funcionario_FabricaSchemaBase):
+    data_adimissao : datetime
+    data_hora_alteracao: datetime
+    endereco:str
+    bairro:str
+    cidade:str
