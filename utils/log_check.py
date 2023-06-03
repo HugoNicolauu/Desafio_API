@@ -1,12 +1,10 @@
 from datetime import datetime,timedelta
 import logging
-import os
 
 logging.basicConfig(filename="./Desafio_API/utils\logs.log", level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
+
 data_limite = datetime.now() - timedelta(days=2)
-
-
 
 def LogCheck():
     for arquivo in "./Desafio_API/utils":
@@ -18,3 +16,4 @@ def LogCheck():
           if data_arquivo < data_limite:            
                 data= open(arquivo,'w')
                 data.close()
+    
