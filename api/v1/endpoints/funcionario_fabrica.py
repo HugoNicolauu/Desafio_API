@@ -4,6 +4,7 @@ from datetime import datetime
 from fastapi import APIRouter, status, Depends, HTTPException,Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.exc import IntegrityError
 
 from models.funcionario import FuncionarioModel
 from models.funcionario_fabrica import Funcionario_fabricaModel
@@ -12,6 +13,7 @@ from schemas.funcionario_schema import FuncionarioSchema
 from core.deps import get_session2,get_session
 from utils.cep_busca import busca_cep
 from api.v1.endpoints.funcionario import get_funcionarios
+from utils.log_check import logging,LogCheck,data_limite
 
 router = APIRouter()
 
@@ -26,9 +28,11 @@ async def post_funcionario_fabrica(func_fab:Funcionario_FabricaSchemaBase,db: As
     db.add(novo_func_fab)
     async with db as session:
         try:
+            LogCheck(data_limite)
+            logging.info("Criando Funcionario_fabrica.")
             await session.commit()
             return novo_func_fab
-        except TypeError:
+        except IntegrityError:
             raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,detail='Dados invalidos')
 
 
@@ -39,6 +43,8 @@ async def get_funcionarios_fabrica(db: AsyncSession = Depends(get_session2)):
         result = await session.execute(query)
         funcionarios_fab: List[Funcionario_FabricaSchema] = result.scalars().all()
     
+        LogCheck(data_limite)
+        logging.info("Listando Funcionarios_fabrica.")
         return funcionarios_fab
     
 
@@ -50,6 +56,8 @@ async def get_funcionario_fabrica(func_fab_id: int, db: AsyncSession = Depends(g
         funcionario_fab: List[Funcionario_FabricaSchema] = result.scalars().one_or_none()
         
         if funcionario_fab:
+            LogCheck(data_limite)
+            logging.info("Buscando Funcionario_fabrica.")
             return funcionario_fab
         else:
             raise HTTPException(detail='Funcionario Não Encontrado',status_code=status.HTTP_404_NOT_FOUND)
@@ -79,6 +87,8 @@ async def put_funcionario_fabrica(func_fab_id: int,func_fab:Funcionario_FabricaS
                     
                 funcionarios_fab_up.data_hora_alteracao = datetime.today()
                 
+            LogCheck(data_limite)
+            logging.info("Atualizando Funcionario_fabrica.")    
             await session.commit()    
             
             return funcionarios_fab_up
@@ -96,6 +106,8 @@ async def delete_funcionario_fabrica(func_fab_id: int, db: AsyncSession = Depend
         if funcionario_fab:
             await session.delete(funcionario_fab)
             await session.commit()
+            LogCheck(data_limite)
+            logging.info("Deletando funcionario_fabrica.")
             
             return Response(status_code=status.HTTP_204_NO_CONTENT)
         else:
@@ -127,9 +139,10 @@ async def transferencia_funcionario(db: AsyncSession = Depends(get_session),db2:
                         func_fab.endereco=end['logradouro']
                         func_fab.bairro=end['bairro']
                         func_fab.cidade=end['localidade']
-                        
+                       
                         await session2.commit()
-                
+            LogCheck(data_limite)
+            logging.info("transferindo funcionario para funcionario fabrica.")    
             query = select(Funcionario_fabricaModel)
             result = await session2.execute(query)
             funcionarios_fab: List[Funcionario_FabricaSchema] = result.scalars().all()
