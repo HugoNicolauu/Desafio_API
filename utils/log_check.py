@@ -6,14 +6,14 @@ logging.basicConfig(filename="./Desafio_API/utils\logs.log", level=logging.INFO,
 
 data_limite = datetime.now() - timedelta(days=2)
 
-def LogCheck():
+def LogCheck(data_li):
     for arquivo in "./Desafio_API/utils":
      if arquivo.endswith('.log'):
           data = open(arquivo)
           data_arquivo_str = data.read(19)
           data.close
           data_arquivo = datetime.strptime(data_arquivo_str, '%Y-%m-%d %H:%M:%S') 
-          if data_arquivo < data_limite:            
+          if data_arquivo < data_li:            
                 data= open(arquivo,'w')
                 data.close()
     
