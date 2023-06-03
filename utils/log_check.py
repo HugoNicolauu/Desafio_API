@@ -8,12 +8,13 @@ data_limite = datetime.now() - timedelta(days=2)
 
 def LogCheck(data_li):
     arquivo = "./Desafio_API/utils\logs.log"
-    if arquivo.endswith('.log'):
+    if arquivo:
         data = open(arquivo)
         data_arquivo_str = data.read(19)
         data.close
-        data_arquivo = datetime.strptime(data_arquivo_str, '%Y-%m-%d %H:%M:%S') 
-        if data_arquivo < data_li:            
-            data= open(arquivo,'w')
-            data.close()
+        if data_arquivo_str:
+            data_arquivo = datetime.strptime(data_arquivo_str, '%Y/%m/%d %H:%M:%S') 
+            if data_arquivo < data_li:            
+                data= open(arquivo,'w')
+                data.close()
     
