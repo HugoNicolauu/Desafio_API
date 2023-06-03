@@ -33,7 +33,7 @@ async def post_funcionario_fabrica(func_fab:Funcionario_FabricaSchemaBase,db: As
             await session.commit()
             return novo_func_fab
         except IntegrityError:
-            raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,detail='Dados invalidos')
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Dados invalidos')
 
 
 @router.get('/',response_model=List[Funcionario_FabricaSchema],status_code=status.HTTP_200_OK)
@@ -42,10 +42,13 @@ async def get_funcionarios_fabrica(db: AsyncSession = Depends(get_session2)):
         query = select(Funcionario_fabricaModel)
         result = await session.execute(query)
         funcionarios_fab: List[Funcionario_FabricaSchema] = result.scalars().all()
-    
+        
         LogCheck(data_limite)
-        logging.info("Listando Funcionarios_fabrica.")
-        return funcionarios_fab
+        logging.info("Listando Funcionarios_fabrica."+str(data_limite))
+        if funcionarios_fab:
+            return funcionarios_fab
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Nenhum funcionario Cadastrado')
     
 
 @router.get('/{func_fab_id}',response_model=Funcionario_FabricaSchema,status_code=status.HTTP_200_OK)
@@ -72,21 +75,25 @@ async def put_funcionario_fabrica(func_fab_id: int,func_fab:Funcionario_FabricaS
         
         if funcionarios_fab_up:
             if func_fab:
-                if func_fab.nome:
-                    funcionarios_fab_up.nome=func_fab.nome
-                if func_fab.rg:
-                    funcionarios_fab_up.rg=func_fab.rg
-                if func_fab.cpf:
-                    funcionarios_fab_up.cpf=func_fab.cpf
-                if func_fab.cep:
-                    result= busca_cep(func_fab.cep)
-                    funcionarios_fab_up.cep=func_fab.cep
-                    funcionarios_fab_up.endereco = result['logradouro']
-                    funcionarios_fab_up.bairro = result['bairro']
-                    funcionarios_fab_up.cidade = result['localidade']
+                try:
+                    if func_fab.nome:
+                        funcionarios_fab_up.nome=func_fab.nome
+                    if func_fab.rg:
+                        funcionarios_fab_up.rg=func_fab.rg
+                    if func_fab.cpf:
+                        funcionarios_fab_up.cpf=func_fab.cpf
+                    if func_fab.cep:
+                        result= busca_cep(func_fab.cep)
+                        funcionarios_fab_up.cep=func_fab.cep
+                        funcionarios_fab_up.endereco = result['logradouro']
+                        funcionarios_fab_up.bairro = result['bairro']
+                        funcionarios_fab_up.cidade = result['localidade']
+                        
+                    funcionarios_fab_up.data_hora_alteracao = datetime.today()
                     
-                funcionarios_fab_up.data_hora_alteracao = datetime.today()
-                
+                except IntegrityError:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail='Dados invalidos')
+
             LogCheck(data_limite)
             logging.info("Atualizando Funcionario_fabrica.")    
             await session.commit()    
