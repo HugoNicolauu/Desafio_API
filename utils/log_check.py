@@ -13,7 +13,7 @@ def LogCheck(data_li):
         data_arquivo_str = data.read(19)
         data.close
         if data_arquivo_str:
-            data_arquivo = datetime.strptime(data_arquivo_str, '%Y/%m/%d %H:%M:%S') 
+            data_arquivo = datetime.strptime(data_arquivo_str, '%Y-%m-%d %H:%M:%S') 
             if data_arquivo < data_li:            
                 data= open(arquivo,'w')
                 data.close()
