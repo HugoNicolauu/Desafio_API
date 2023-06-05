@@ -1,5 +1,5 @@
 # Desafio_API
-> É um exercícios basico usando fastapi com objetivo de ampliar e aplicar conhecimento de **Python** e **FastAPI**.
+> É um exercícios basico usando fastapi com objetivo de ampliar e aplicar conhecimento de **Python**, **FastAPI** e documentar ultilizando **Github**.
 
 
 ## Exemplo de uso
